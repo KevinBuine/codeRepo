@@ -69,34 +69,39 @@ while True:
     elif choice == '4':
         showContacts()
         selection = input('input the name of the contact to update: ')
-        for item in contacts:
-            if selection == contact_list['contactName']:
+
+        found = False
+
+        for contact in contacts:
+            if selection.lower() == contact['contactName'].lower():
+                found = True
                 print('Contact selected')
                 update = input(' select 1. Update name  2. Update number   3. Update email')
                 if update == '1':
                     print(f' changing {contact_list['contactName']}')
                     new_name = input('input new name for contact: ')
-                    contact_list['contactName'] = new_name
+                    contact['contactName'] = new_name
                     print('Name updated')
                 elif update =='2':
                     print(f' changing {contact_list['contactNo']}')
                     new_no = input('input new number for contact: ')
-                    contact_list['contactNo'] = new_no
+                    contact['contactNo'] = new_no
                     print('Number updated')
                 elif update == '3':
                     print(f' changing {contact_list['Email']}')
                     new_mail = input('input new Email for contact: ')
-                    contact_list['Email'] = new_mail
+                    contact['Email'] = new_mail
                     print('Email updated')
                 else:
                     print('invalid selection')
-            else:
-                print('Not found')
+        
                 break
-
+        if not found:
+            print('Not found')
+            
     elif choice == '5':
         showContacts()
-        take = input('enter the number of the contact to delete: ')
+        take = int(input('enter the number of the contact to delete: '))
         del contacts[take - 1]
         print('contact deleted')
 
