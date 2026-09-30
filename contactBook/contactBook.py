@@ -15,20 +15,17 @@ print ('')
 contacts = []
 
 def showContacts():
-    for index, v in enumerate (contacts, start = 1):
-        print (f'{index}. {contact_list['contactName']}  -   {contact_list['contactNo']}   -   {contact_list['Email']}')
+    for index, contact in enumerate (contacts, start = 1):
+        print (f"{index}. {contact['contactName']}  -   {contact['contactNo']}   -   {contact['Email']}")
 
 def searchContacts():
     value = input('Enter contact name to search: ')
-    contact = []
     for index, contact in enumerate (contacts, start=1):
-        if value == contact_list['contactName']:
-            contact.append(contact_list['contactName'])
-        if contact:
+        if value.lower() == contact['contactName'].lower():
             print('Contact found....')
-            print(f"{index}. {contact}")
-        else:
-            print('Contact not found....')
+            print(f"{index}. {contact['contactName']}  - {contact['contactNo']}   -  {contact['Email']}")
+            return
+    print('Contact not found....')
 
 
 while True:
