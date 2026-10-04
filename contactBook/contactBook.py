@@ -6,12 +6,6 @@
 # delete contacts
 # exit
 import json
-try:
-    with open("contacts.json", "r") as file:
-        contacts = json.load(file)
-except:
-    FileNotFoundError
-    contacts = []
 
 print('*****************************')
 print('')
@@ -19,11 +13,24 @@ print('contactbook pro')
 print('')
 print ('')
 
+def loadContacts():
+    try:
+        with open("contacts.json", "r") as file:
+            contacts = json.load(file)
+    except FileNotFoundError:
+        contacts = []
+
+    return contacts
+
+contacts = loadContacts()
+
+     
+
 def showContacts():
     for index, contact in enumerate (contacts, start = 1):
         print (f"{index}. {contact['contactName']}  -   {contact['contactNo']}   -   {contact['Email']}")
 
-def saveContacts():
+def saveContacts(contacts):
     with open ("contacts.json", "w") as file:
                     json.dump(contacts, file, indent=4)
     
@@ -60,7 +67,7 @@ while True:
             }
             contacts.append(contact_list)
 
-            saveContacts()
+            saveContacts(contacts)
             print('contact saved....')
             option = input('Do ypu want to save anoter contact? 1. Yes   2. No \n')
             if option == '2':
@@ -94,19 +101,19 @@ while True:
                     print(f' changing {contact['contactName']}')
                     new_name = input('input new name for contact: ')
                     contact['contactName'] = new_name
-                    saveContacts()
+                    saveContacts(contacts)
                     print('Name updated')
                 elif update =='2':
                     print(f' changing {contact['contactNo']}')
                     new_no = input('input new number for contact: ')
                     contact['contactNo'] = new_no
-                    saveContacts()
+                    saveContacts(contacts)
                     print('Number updated')
                 elif update == '3':
                     print(f' changing {contact['Email']}')
                     new_mail = input('input new Email for contact: ')
                     contact['Email'] = new_mail
-                    saveContacts()
+                    saveContacts(contacts)
                     print('Email updated')
                 else:
                     print('invalid selection')
@@ -122,7 +129,7 @@ while True:
         
             if 1<= take <= len(contacts):
                 del contacts[take - 1]
-                saveContacts()
+                saveContacts(contacts)
                 print('contact deleted')
             else:
                  print('That contact does not exist')
@@ -131,6 +138,9 @@ while True:
                     print('invalid entry. Enter a number')
 
                     
+
+
+
             
 
         
