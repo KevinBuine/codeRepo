@@ -1,10 +1,16 @@
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import json 
 
-with open("contacts.json", "r") as file:
-    contacts = json.load(file)
+BASE_DIR = Path(__file__).resolve().parent
+CONTACTS_FILE = BASE_DIR / "contacts.json"
 
+try:
+    with open("CONTACTS_FILE", "r") as file:
+        contacts = json.load(file)
+except FileNotFoundError:
+    contacts  = []
 
 app = FastAPI()
 
@@ -15,7 +21,7 @@ class Contact(BaseModel):
 
 
 def save_contacts():
-    with open("contacts.json", "w") as file:
+    with open("CONTACTS_FILE", "w") as file:
         json.dump(contacts, file, indent=4)
 
 # contacts = [{"name": "dan",
@@ -23,7 +29,7 @@ def save_contacts():
 #                 "number": "292968"}]
 
 @app.get("/")
-def Home():
+def home():
     return{"message": "Hello World"}
 
 
@@ -67,9 +73,11 @@ def update_contact(contact_id: int, contact: Contact):
 
 @app.delete("/contacts/{contact_id}", status_code=204)
 def delete_contact(contact_id: int):
-    if  1 <= contact_id <= len(contacts):
-        del contacts[contact_id - 1]
-        save_contacts()
+    for existing_contact in contacts:    
+        if  contact_id == existing_contact["id"]:
+                contacts.remove(existing_contact)
+                save_contacts()
+                return
     else:
         raise HTTPException (status_code = 404, detail = "Contact does not exist")
 
