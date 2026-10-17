@@ -6,11 +6,21 @@ import json
 BASE_DIR = Path(__file__).resolve().parent
 CONTACTS_FILE = BASE_DIR / "contacts.json"
 
-try:
-    with open("CONTACTS_FILE", "r") as file:
-        contacts = json.load(file)
-except FileNotFoundError:
-    contacts  = []
+def load_contacts():
+    try:
+        with open(CONTACTS_FILE, "r") as file:
+            contacts = json.load(file)
+            return contacts
+    except FileNotFoundError:
+        return []
+contacts = load_contacts()
+
+
+# try:
+#     with open(CONTACTS_FILE, "r") as file:
+#         contacts = json.load(file)
+# except FileNotFoundError:
+#     contacts  = []
 
 app = FastAPI()
 
@@ -21,7 +31,7 @@ class Contact(BaseModel):
 
 
 def save_contacts():
-    with open("CONTACTS_FILE", "w") as file:
+    with open(CONTACTS_FILE, "w") as file:
         json.dump(contacts, file, indent=4)
 
 # contacts = [{"name": "dan",
