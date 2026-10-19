@@ -10,17 +10,20 @@ def load_contacts():
     try:
         with open(CONTACTS_FILE, "r") as file:
             contacts = json.load(file)
+            if not isinstance(contacts, list):
+                raise ValueError("Contacts.json must contain a list of contacts")
+            for contact in contacts: 
+                            if not isinstance (contact, dict):
+                                raise KeyError("Contacts must contain valid keys")
             return contacts
     except FileNotFoundError:
         return []
+    except json.JSONDecodeError:
+        print("your file contacts.json contains invalid JSON")
+        raise
+
 contacts = load_contacts()
 
-
-# try:
-#     with open(CONTACTS_FILE, "r") as file:
-#         contacts = json.load(file)
-# except FileNotFoundError:
-#     contacts  = []
 
 app = FastAPI()
 
@@ -30,13 +33,18 @@ class Contact(BaseModel):
 
 
 
+
+
 def save_contacts():
     with open(CONTACTS_FILE, "w") as file:
         json.dump(contacts, file, indent=4)
 
-# contacts = [{"name": "dan",
-#                 "number": "62727"}, {"name": "deb",
-#                 "number": "292968"}]
+def find_contact(contact_id: int):
+    for contact in contacts:
+        if contact_id == contact["id"]:
+            return contact
+    raise HTTPException(status_code=404, detail="Contact does not exist")
+
 
 @app.get("/")
 def home():
@@ -64,30 +72,24 @@ def add_contact(contact: Contact):
 
 @app.get("/contacts/{contact_id}")
 def get_contact_id(contact_id: int):
-    for contact in contacts:
-        if contact_id == contact["id"]:
-            return contact
-    
-    raise HTTPException(status_code=404, detail="Contact does not exist")
+    return find_contact(contact_id)
+
+
 
 @app.put("/contacts/{contact_id}")
 def update_contact(contact_id: int, contact: Contact):
-    for existing_contact in contacts:
-        if existing_contact["id"] == contact_id:
-            existing_contact["name"] = contact.name
-            existing_contact["number"] = contact.number
-            save_contacts()
-            return existing_contact
-    else:
-        raise HTTPException(status_code= 404, detail= "Contact does not exist")
+    existing_contact = find_contact(contact_id)
+    existing_contact["name"] = contact.name
+    existing_contact["number"] = contact.number
+    save_contacts()
+    return existing_contact
+    
 
 @app.delete("/contacts/{contact_id}", status_code=204)
 def delete_contact(contact_id: int):
-    for existing_contact in contacts:    
-        if  contact_id == existing_contact["id"]:
-                contacts.remove(existing_contact)
-                save_contacts()
-                return
-    else:
-        raise HTTPException (status_code = 404, detail = "Contact does not exist")
+    existing_contact = find_contact(contact_id)
+    contacts.remove(existing_contact)
+    save_contacts()
+    return
+    
 
