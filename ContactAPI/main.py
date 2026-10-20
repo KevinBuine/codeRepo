@@ -12,9 +12,28 @@ def load_contacts():
             contacts = json.load(file)
             if not isinstance(contacts, list):
                 raise ValueError("Contacts.json must contain a list of contacts")
+            required_keys = {"id", "name", "number"}
+            seen_ids = set()
             for contact in contacts: 
-                            if not isinstance (contact, dict):
-                                raise KeyError("Contacts must contain valid keys")
+                
+                if not isinstance (contact, dict):
+                    raise ValueError("Every contact must be a dictionary")
+                
+                if not required_keys.issubset(contact):
+                    raise ValueError("Contact is missing one or more requird keys")
+                
+                if type(contact["id"]) != int:
+                    raise ValueError("contact id must be an integer")
+                
+                if contact["id"] in seen_ids:
+                    raise ValueError("contact ids must be unique")
+                else: 
+                    seen_ids.add(contact["id"])
+
+                if not isinstance(contact["name"], str):
+                    raise ValueError("contact name must be a string")
+                if not isinstance(contact["number"], str):
+                    raise ValueError("Contact number must be a string")
             return contacts
     except FileNotFoundError:
         return []
