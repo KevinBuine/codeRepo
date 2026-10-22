@@ -27,8 +27,8 @@ def load_contacts():
                 
                 if contact["id"] in seen_ids:
                     raise ValueError("contact ids must be unique")
-                else: 
-                    seen_ids.add(contact["id"])
+                
+                seen_ids.add(contact["id"])
 
                 if not isinstance(contact["name"], str):
                     raise ValueError("contact name must be a string")
