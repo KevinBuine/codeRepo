@@ -20,13 +20,15 @@ def load_contacts():
                     raise ValueError("Every contact must be a dictionary")
                 
                 if not required_keys.issubset(contact):
-                    raise ValueError("Contact is missing one or more requird keys")
+                    raise ValueError("Contact is missing one or more required keys")
                 
                 if type(contact["id"]) != int:
                     raise ValueError("contact id must be an integer")
+                if contact["id"] <=0:
+                    raise ValueError("Contact ID must be greater than zero")
                 
                 if contact["id"] in seen_ids:
-                    raise ValueError("contact ids must be unique")
+                    raise ValueError("contact IDs must be unique")
                 
                 seen_ids.add(contact["id"])
 
@@ -34,6 +36,8 @@ def load_contacts():
                     raise ValueError("contact name must be a string")
                 if not isinstance(contact["number"], str):
                     raise ValueError("Contact number must be a string")
+                if not contact["name"].strip() or not contact["number"].strip():
+                    raise ValueError("contact name or contact number cannot be empty")
             return contacts
     except FileNotFoundError:
         return []
@@ -77,10 +81,7 @@ def get_all_contacts():
 
 @app.post("/contacts")
 def add_contact(contact: Contact):
-    contact_ids =[]
-    for existing_contact in contacts:
-        contact_ids.append(existing_contact["id"])
-    highest_id = (max(contact_ids, default = 0))
+    highest_id = max((contact["id"] for contact in contacts), default = 0)
     new_id = highest_id + 1
     new_contact = {"id" : new_id,
         "name": contact.name, 
