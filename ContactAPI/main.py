@@ -1,6 +1,6 @@
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 import json 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -51,9 +51,16 @@ contacts = load_contacts()
 app = FastAPI()
 
 class Contact(BaseModel):
+    
     name: str
     number: str
-
+    @field_validator("name", "number")
+    @classmethod
+    def strip_whitespace(cls, value: str) -> str:
+        cleaned_value = value.strip()
+        if cleaned_value == "":
+            raise ValueError ("name or number cannot be empty")
+        return cleaned_value
 
 
 
