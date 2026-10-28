@@ -119,10 +119,18 @@ def update_task(task_id: int, task: Task):
             
             save_tasks(tasks)
             return current_task
-raise HTTPException(status_code=404, detail= "No task with that ID exists")
+    raise HTTPException(status_code=404, detail= "No task with that ID exists")
 
-    
+@app.delete("/tasks/{task_id}", status_code=204)
+def delete_task(task_id: int):
+    tasks = load_tasks()
+    for single_task in tasks:
+        if single_task["id"] == task_id:
+            tasks.remove(single_task)
+            save_tasks(tasks)
+            return
 
-
+    raise HTTPException(status_code=404, detail="no task found")
+        
     
 

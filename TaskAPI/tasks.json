@@ -1,14 +1,8 @@
 [
     {
-        "id": 1,
-        "title": "Study Python",
-        "description": "",
-        "completed": false
-    },
-    {
         "id": 2,
-        "title": "Learn FastAPI",
-        "description": "Build a task manager",
-        "completed": false
+        "title": "akhshask",
+        "description": "string",
+        "completed": true
     }
 ]
