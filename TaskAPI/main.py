@@ -119,7 +119,6 @@ def update_task(task_id: int, task: Task):
             
             save_tasks(tasks)
             return current_task
-    
 raise HTTPException(status_code=404, detail= "No task with that ID exists")
 
     
